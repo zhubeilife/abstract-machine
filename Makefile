@@ -96,6 +96,15 @@ ifeq ($(shell [ $(GCC_VERSION) -ge 12 ] && echo true || echo false), true)
     CFLAGS += --param=min-pagesize=0
 endif
 
+ifeq ($(strip $(shell uname -s)), Linux) # Darwin, Linux
+  ifeq ($(shell [ ! $(DISPLAY) ] && echo true || echo false), true)
+    $(info no display)
+    QEMU_FLAGS += -nographic
+  else
+    $(info has one ${DISPLAY})
+  endif
+endif
+
 CXXFLAGS +=  $(CFLAGS) -ffreestanding -fno-rtti -fno-exceptions
 ASFLAGS  += -MMD $(INCFLAGS)
 LDFLAGS  += -z noexecstack

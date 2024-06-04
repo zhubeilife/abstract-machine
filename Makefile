@@ -87,6 +87,15 @@ CFLAGS   += -O2 -MMD -Wall -Werror $(INCFLAGS) \
             -DARCH_H=\"$(ARCH_H)\" \
             -fno-asynchronous-unwind-tables -fno-builtin -fno-stack-protector \
             -Wno-main -U_FORTIFY_SOURCE -fvisibility=hidden
+
+# fix issue https://github.com/NJU-ProjectN/abstract-machine/issues/16
+# 获取gcc版本号
+GCC_VERSION := $(shell $(CC) -dumpversion | cut -f1 -d.)
+# 检查gcc版本是否大于等于1
+ifeq ($(shell [ $(GCC_VERSION) -ge 12 ] && echo true || echo false), true)
+    CFLAGS += --param=min-pagesize=0
+endif
+
 CXXFLAGS +=  $(CFLAGS) -ffreestanding -fno-rtti -fno-exceptions
 ASFLAGS  += -MMD $(INCFLAGS)
 LDFLAGS  += -z noexecstack

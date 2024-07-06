@@ -5,6 +5,17 @@ html:
 	cat Makefile | sed 's/^\([^#]\)/    \1/g' | markdown_py > Makefile.html
 .PHONY: html
 
+# !!! hack only
+ifeq ($(strip $(shell uname -s)), Darwin) # Darwin, Linux
+  ifndef AM_HOME
+    AM_HOME := $(CURDIR)
+    $(info !!! make cur dir as AM_HOME)
+  endif
+endif
+
+all: run
+# !!! end of hack only
+
 ## 1. Basic Setup and Checks
 
 ### Default to create a bare-metal kernel image
@@ -114,6 +125,17 @@ LDFLAGS  += -z noexecstack
 ### Paste in arch-specific configurations (e.g., from `scripts/x86_64-qemu.mk`)
 -include $(AM_HOME)/scripts/$(ARCH).mk
 
+### Fall back to native gcc/binutils if there is no cross compiler
+ifeq ($(wildcard $(shell which $(CC))),)
+  ifneq ($(wildcard $(shell which x86_64-elf-gcc)),)
+  	  $(info #  $(CC) not found; fall back to use x86_64-elf-gcc on mac )
+ 	  CROSS_COMPILE := x86_64-elf-
+  else
+  	  $(info #  $(CC) not found; fall back to default gcc and binutils)
+	  CROSS_COMPILE :=
+  endif
+endif
+
 ## 5. Compilation Rules
 
 ### Rule (compile): a single `.c` -> `.o` (gcc)
@@ -169,7 +191,7 @@ image-dep: $(LIBS) $(IMAGE).elf
 
 ### Clean a single project (remove `build/`)
 clean:
-	rm -rf Makefile.html $(WORK_DIR)/build/
+	rm -rf Makefile.html $(WORK_DIR)/build/ $(AM_HOME)/am/build $(AM_HOME)/klib/build
 .PHONY: clean
 
 ### Clean all sub-projects within depth 2 (and ignore errors)

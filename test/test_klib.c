@@ -191,6 +191,12 @@ void test_strcat(){
     if (strcmp(strcat(strcpy(str4, str3), s[3]), s[4]) != 0 ) putstr("test_strcat fail\n");
 }
 
+void test_printf(){
+    printf("%d\n", 1123);
+    printf("%d\n", -456);
+    printf("%s %s for %d times\n", "hello", "world", 100);
+}
+
 int main() {
     putstr("========== Test Start ===========\n");
 
@@ -205,6 +211,8 @@ int main() {
     test_memmove();
     test_memcpy();
     test_memcmp();
+
+    test_printf();
 
     putstr("========== Test end ===========\n");
     return 0;

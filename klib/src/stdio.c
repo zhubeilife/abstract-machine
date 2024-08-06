@@ -28,7 +28,7 @@ void p_itoa(int value, int* counter, char *out)
       value = -value;
   }
 
-  // simply way think the max int is 65535, so max len is 6
+  //TODO: simply way think the max int is 65535, so max len is 6
   int sub_counter = 10000;
   bool leading_zero = true;
   while (sub_counter)
@@ -94,6 +94,12 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
     fmt++;
   }
 
+  if (out != NULL)
+  {
+    *out = '\0';
+    counter++;
+  }
+
   return counter;
 }
 
@@ -119,8 +125,18 @@ int sprintf(char *out, const char *fmt, ...) {
   return counter;
 }
 
+
+// The functions snprintf() and vsnprintf() write at most size bytes
+// (including the terminating null byte ('\0')) to str.
 int snprintf(char *out, size_t n, const char *fmt, ...) {
-  panic("Not implemented");
+  va_list ap;
+  va_start(ap, fmt);
+
+  int counter = vsnprintf(out, n, fmt, ap);
+
+  va_end(ap);
+
+  return counter;
 }
 
 int vsnprintf(char *out, size_t n, const char *fmt, va_list ap) {

@@ -18,23 +18,15 @@ void inline output(char *out, char c)
   }
 }
 
-void p_itoa(int value, int* counter, char *out)
+void p_itoa(unsigned int value, int* counter, char *out)
 {
-  if (value < 0)
-  {
-
-      output(out, '-');
-      *counter += 1;
-      value = -value;
-  }
-
-  //TODO: simply way think the max int is 65535, so max len is 6
-  int sub_counter = 10000;
+  //TODO: simply way think the max int is 4294967295, so max len is 10
+  unsigned int sub_counter = 1000000000;
   bool leading_zero = true;
   while (sub_counter)
   {
     char zero = '0';
-    int digit = value / sub_counter;
+    unsigned int digit = value / sub_counter;
 
     if (digit || !leading_zero)
     {
@@ -69,6 +61,16 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
       switch (*fmt)
       {
       case 'd':                      // int
+        d = va_arg(ap, int);
+        if (d < 0)
+        {
+          output(out, '-');
+          counter += 1;
+          d = -d;
+        }
+        p_itoa(d, &counter, out);
+        break;
+      case 'u':                      // unsigned int
         d = va_arg(ap, int);
         p_itoa(d, &counter, out);
         break;

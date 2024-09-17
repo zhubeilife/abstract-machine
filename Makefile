@@ -99,6 +99,9 @@ CFLAGS   += -O2 -MMD -Wall -Werror $(INCFLAGS) \
             -fno-asynchronous-unwind-tables -fno-builtin -fno-stack-protector \
             -Wno-main -U_FORTIFY_SOURCE -fvisibility=hidden
 
+## Do not delete intermediate files, leave *.i *.s *.i fle
+CFLAGS  += -save-temps
+
 # fix issue https://github.com/NJU-ProjectN/abstract-machine/issues/16
 # 获取gcc版本号
 GCC_VERSION := $(shell $(CC) -dumpversion | cut -f1 -d.)

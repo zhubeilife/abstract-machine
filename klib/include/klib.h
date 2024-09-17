@@ -9,7 +9,8 @@
 extern "C" {
 #endif
 
-#define __NATIVE_USE_KLIB__
+// native的IOE是基于SDL库实现的, 它们假设常用库函数的行为会符合glibc标准, 但我们自己实现的klib通常不能满足这一要求. 因此__NATIVE_USE_KLIB__仅供测试klib实现的时候使用, 我们不要求在定义__NATIVE_USE_KLIB__的情况下正确运行所有程序.
+// #define __NATIVE_USE_KLIB__
 
 // string.h
 void  *memset    (void *s, int c, size_t n);

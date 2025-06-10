@@ -98,9 +98,13 @@ CFLAGS   += -O2 -MMD -Wall -Werror $(INCFLAGS) \
             -DARCH_H=\"$(ARCH_H)\" \
             -fno-asynchronous-unwind-tables -fno-builtin -fno-stack-protector \
             -Wno-main -U_FORTIFY_SOURCE -fvisibility=hidden
+CFLAGS += -Wno-unused-variable
 
+## For debug
 ## Do not delete intermediate files, leave *.i *.s *.i fle
-CFLAGS  += -save-temps
+#CFLAGS  += -save-temps
+# 禁止尾调用优化
+# -fno-optimize-sibling-calls
 
 # fix issue https://github.com/NJU-ProjectN/abstract-machine/issues/16
 # 获取gcc版本号

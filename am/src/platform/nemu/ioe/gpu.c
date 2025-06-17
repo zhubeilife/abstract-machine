@@ -5,6 +5,7 @@
 #define SYNC_ADDR (VGACTL_ADDR + 4)
 
 void __am_gpu_init() {
+  return;
   int i;
   uint32_t size = inl(VGACTL_ADDR);
   uint32_t w = size >> 16;
@@ -27,12 +28,19 @@ void __am_gpu_config(AM_GPU_CONFIG_T *cfg) {
 
 void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
   int x = ctl->x, y = ctl->y, w = ctl->w, h = ctl->h;
+
   uint32_t size = inl(VGACTL_ADDR);
   int width = size >> 16;
   int height = size & 0x0000ffff;
   if (w == 0 || h == 0 || w > width || h > height)
   {
-    printf("|%d|%d|%d|%d|%d|%d|\n",x, y, w, h, width, height);
+    if (ctl->sync) {
+      outl(SYNC_ADDR, 1);
+    }
+    else {
+      printf("|%d|%d|%d|%d|%d|%d|\n",x, y, w, h, width, height);
+    }
+    return;
   }
 
   uint32_t *pixels = ctl->pixels;
@@ -42,8 +50,8 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
     {
       uint32_t index = x + (y + i) * width + j;
       uint32_t value = pixels[i*w + j];
-      // TODO: outl seems werid, but I not find why
-      // outl(FB_ADDR + index, value);
+      // both setting way is ok, but need remember to * 4
+      // outl(FB_ADDR + index*4, value);
       fb[index] = value;
     }
   }

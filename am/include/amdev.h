@@ -6,6 +6,7 @@
 #define AM_DEVREG(id, reg, perm, ...) \
   enum { AM_##reg = (id) }; \
   typedef struct { __VA_ARGS__; } AM_##reg##_T;
+// num { AM_TIMER_RTC = (5) }; typedef struct { int year, month, day, hour, minute, second; } AM_TIMER_RTC_T;;
 
 AM_DEVREG( 1, UART_CONFIG,  RD, bool present);
 AM_DEVREG( 2, UART_TX,      WR, char data);

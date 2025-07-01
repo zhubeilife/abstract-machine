@@ -14,6 +14,8 @@ LDFLAGS   += --defsym=_pmem_start=0x80000000 --defsym=_entry_offset=0x0
 LDFLAGS   += --gc-sections -e _start
 NEMUFLAGS += -l $(shell dirname $(IMAGE).elf)/nemu-log.log
 NEMUFLAGS += -e $(IMAGE).elf
+# TODO support with -e to load ramdisk.img elf file parse
+# also need to modify nemu to support
 # --batch              run with batch mode
 # NEMUFLAGS += --batch
 

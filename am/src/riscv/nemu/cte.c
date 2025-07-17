@@ -17,7 +17,7 @@ Context* __am_irq_handle(Context *c) {
         int type = c->GPR1;
         if (type < 0) {
           ev.event = EVENT_YIELD;
-        } else if (type >= 0 && type <= 16) {
+        } else if (type >= 0) {
           ev.event = EVENT_SYSCALL;
         }else {
           printf("not support: c->GPR1 = %d\n", c->GPR1);

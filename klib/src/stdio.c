@@ -5,12 +5,12 @@
 
 #if !defined(__ISA_NATIVE__) || defined(__NATIVE_USE_KLIB__)
 
-void inline output(char *out, char c)
+void inline output(char **out, char c)
 {
-  if (out != NULL)
+  if (out != NULL && *out != NULL)
   {
-     *out = c;
-     out++;
+     **out = c;
+     (*out)++;
   }
   else
   {
@@ -18,7 +18,7 @@ void inline output(char *out, char c)
   }
 }
 
-void p_itoa(unsigned int value, int* counter, char *out)
+void p_itoa(unsigned int value, int* counter, char **out)
 {
   //TODO: simply way think the max int is 4294967295, so max len is 10
   unsigned int sub_counter = 1000000000;
@@ -31,7 +31,7 @@ void p_itoa(unsigned int value, int* counter, char *out)
     if (digit || !leading_zero)
     {
       output(out, zero + digit);
-      counter++;
+      (*counter)++;
       if (digit)
       {
         leading_zero = false;
@@ -40,7 +40,7 @@ void p_itoa(unsigned int value, int* counter, char *out)
     else if (digit == 0 && sub_counter == 1)
     {
       output(out, zero);
-      counter++;
+      (*counter)++;
     }
 
     value = value % sub_counter;
@@ -53,6 +53,8 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
   int d;
   char c;
   char *s;
+  char *out_ptr = out;
+  char **outp = (out != NULL) ? &out_ptr : NULL;
   while (*fmt){
     switch (*fmt)
     {
@@ -64,42 +66,42 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
         d = va_arg(ap, int);
         if (d < 0)
         {
-          output(out, '-');
+          output(outp, '-');
           counter += 1;
           d = -d;
         }
-        p_itoa(d, &counter, out);
+        p_itoa(d, &counter, outp);
         break;
       case 'u':                      // unsigned int
         d = va_arg(ap, int);
-        p_itoa(d, &counter, out);
+        p_itoa(d, &counter, outp);
         break;
       case 'c':
         /* need a cast here since va_arg only
                  takes fully promoted types */
           c = (char)va_arg(ap, int);
-        output(out, c);
+        output(outp, c);
         counter++;
         break;
       case 's':                      // string
         s = va_arg(ap, char*);
-        for (const char *p = s; *p; p++) output(out, *p);
+        for (const char *p = s; *p; p++) output(outp, *p);
         counter += strlen(s);
         break;
       }
       break;
     default:
-      output(out,*fmt);
+      output(outp,*fmt);
       counter++;
       break;
     }
     fmt++;
   }
 
-  if (out != NULL)
+  if (outp != NULL)
   {
-    *out = '\0';
-    counter++;
+    output(outp, '\0');
+    // 不计入 counter
   }
 
   return counter;

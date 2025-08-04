@@ -48,8 +48,31 @@ bool cte_init(Context*(*handler)(Event, Context*)) {
   return true;
 }
 
+// kstack是栈的范围, entry是内核线程的入口, arg则是内核线程的参数
+/*
+        |               |
+        +---------------+ <---- kstack.end
+        |               |
+        |    context    |
+        |               |
+        +---------------+ <--+
+        |               |    |
+        |               |    |
+        |               |    |
+        |               |    |
+        +---------------+    |
+        |       cp      | ---+
+        +---------------+ <---- kstack.start
+        |               |
+ */
 Context *kcontext(Area kstack, void (*entry)(void *), void *arg) {
-  return NULL;
+  Context* context = (Context*)(kstack.end - sizeof(Context));
+  // or Context *context = (Context *)kstack.end - 1; 取决于将end看作是什么类型的指针
+  // mepc:Machine Exception Program Counter
+  context->mepc = (uintptr_t)entry;
+  context->GPR2 = (uintptr_t)arg;
+  context->mstatus = 0x00001800;
+  return context;
 }
 
 void yield() {

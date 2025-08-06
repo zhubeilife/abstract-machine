@@ -65,6 +65,7 @@ bool cte_init(Context*(*handler)(Event, Context*)) {
         +---------------+ <---- kstack.start
         |               |
  */
+// kstack是栈的范围, entry是内核线程的入口, arg则是内核线程的参数. 此外, kcontext()要求内核线程不能从entry返回, 否则其行为是未定义的(也就是entry是个while(1)的).
 Context *kcontext(Area kstack, void (*entry)(void *), void *arg) {
   Context* context = (Context*)(kstack.end - sizeof(Context));
   // or Context *context = (Context *)kstack.end - 1; 取决于将end看作是什么类型的指针

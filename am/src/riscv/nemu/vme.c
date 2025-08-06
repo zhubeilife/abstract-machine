@@ -70,5 +70,11 @@ void map(AddrSpace *as, void *va, void *pa, int prot) {
 }
 
 Context *ucontext(AddrSpace *as, Area kstack, void *entry) {
-  return NULL;
+  Context* context = (Context*)(kstack.end - sizeof(Context));
+  // or Context *context = (Context *)kstack.end - 1; 取决于将end看作是什么类型的指针
+  // mepc:Machine Exception Program Counter
+  context->mepc = (uintptr_t)entry;
+  // context->GPR2 = (uintptr_t)arg;
+  context->mstatus = 0x00001800;
+  return context;
 }

@@ -16,6 +16,7 @@ CFLAGS  += -fpie $(shell sdl2-config --cflags)
 ASFLAGS += -fpie -pie
 comma = ,
 LDFLAGS_CXX = $(addprefix -Wl$(comma), $(LDFLAGS)) -pie -ldl $(shell sdl2-config --libs)
+CFLAGS  += -g
 
 run: image
 	$(IMAGE).elf

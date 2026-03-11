@@ -1,6 +1,4 @@
 #include <klib.h>
-#include <klib-macros.h>
-#include <stdint.h>
 
 #if !defined(__ISA_NATIVE__) || defined(__NATIVE_USE_KLIB__)
 
@@ -186,6 +184,25 @@ void *memcpy(void *out, const void *in, size_t n) {
 // interpreted as unsigned char) of the memory areas s1 and s2.
 int memcmp(const void *s1, const void *s2, size_t n) {
   return strncmp((const char *)s1, (const char *)s2, n);
+}
+
+char *strchr(const char *s, int c) {
+  do {
+    if (*s == c) return (char *)s;
+    if (*s == '\0') break;
+    s ++;
+  } while (1);
+  return NULL;
+}
+
+char *strrchr(const char *s, int c) {
+  const char *p = s + strlen(s) + 1;
+  do {
+    if (*p == c) return (char *)p;
+    if (s == p) break;
+    p --;
+  } while (1);
+  return NULL;
 }
 
 #endif

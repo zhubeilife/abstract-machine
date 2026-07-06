@@ -21,8 +21,16 @@ int abs(int x) {
   type name(const char *nptr, char **endptr, int base) { \
     type x = 0; \
     while (isspace(*nptr)) { nptr ++; } \
-    while (*nptr >= '0' && *nptr <= '9') { \
-      x = x * 10 + *nptr - '0'; \
+    if (base == 0) { \
+      base = (nptr[0] != '0') ? 10 : (tolower(nptr[1]) == 'x' ? 16 : 8); \
+    } \
+    if ((base == 16) && (nptr[0] == '0' && tolower(nptr[1]) == 'x')) { nptr += 2; } \
+    while (isalnum(*nptr)) { \
+      if (base == 8  && !(*nptr >= '0' && *nptr <= '7')) break; \
+      if (base == 10 && !isdigit(*nptr)) break; \
+      if (base == 16 && !isxdigit(*nptr)) break; \
+      int d = isalpha(*nptr) ? tolower(*nptr) - 'a' + 10 : *nptr - '0'; \
+      x = x * base + d; \
       nptr ++; \
     } \
     if (endptr) { \

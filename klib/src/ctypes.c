@@ -23,7 +23,7 @@ int islower(int c) {
 }
 
 int isupper(int c) {
-  return (c >= 'a' && c <= 'z');
+  return (c >= 'A' && c <= 'Z');
 }
 
 int isalpha(int c) {

@@ -16,7 +16,7 @@ Limitation:
 * It is difficult to break lw into lbu, since it requires at least two temporary
   registers. This makes it difficult to implement other instructions with lw,
   due to the small numbers of avaliable registers.
-* We can not use lw/sw io impement lbu/sb, since this process requires detecting
+* We can not use lw/sw to implement lbu/sb, since this process requires detecting
   misaligned memory accessing.
 * We can not break lui into addi + slli, since the linker can not provide
   symbol[31:20] and symbol[19:12]. The linker can only provide %hi(symbol)

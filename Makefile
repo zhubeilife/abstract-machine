@@ -115,11 +115,14 @@ CFLAGS += -Wno-unused-variable
 # -fno-optimize-sibling-calls
 
 # fix issue https://github.com/NJU-ProjectN/abstract-machine/issues/16
-# 获取gcc版本号
+# 获取gcc版本号 (仅当 $(CC) 确实是 GCC 而非 clang 伪装的 gcc 时才生效，如 macOS 上的 gcc 实为 clang)
+IS_CLANG := $(shell $(CC) --version 2>/dev/null | grep -qi clang && echo true || echo false)
 GCC_VERSION := $(shell $(CC) -dumpversion | cut -f1 -d.)
 # 检查gcc版本是否大于等于1
+ifeq ($(IS_CLANG), false)
 ifeq ($(shell [ $(GCC_VERSION) -ge 12 ] && echo true || echo false), true)
     CFLAGS += --param=min-pagesize=0
+endif
 endif
 
 ifeq ($(strip $(shell uname -s)), Linux) # Darwin, Linux
